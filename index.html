@@ -2,7 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IPESA Servicios - Reportes TV</title>
+
   <style>
     html, body {
       margin: 0;
@@ -20,52 +22,122 @@
       border: none;
     }
 
-    #titulo {
+    .header {
       position: fixed;
-      top: 12px;
-      left: 20px;
-      background: rgba(0,0,0,0.65);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 58px;
+      background: rgba(0, 0, 0, 0.75);
       color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 18px;
       z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-sizing: border-box;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .time {
+      font-size: 18px;
+    }
+
+    .progress-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      z-index: 10;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #2ecc71;
+      transition: width 1s linear;
     }
   </style>
 </head>
+
 <body>
 
-  <div id="titulo">Cargando reporte...</div>
+  <div class="header">
+    <div class="title" id="tituloReporte">Cargando reporte...</div>
+    <div class="time" id="fechaHora"></div>
+  </div>
+
   <iframe id="visor"></iframe>
 
+  <div class="progress-container">
+    <div class="progress-bar" id="barraProgreso"></div>
+  </div>
+
   <script>
+    const tiempoPorReporte = 15000;
+
     const reportes = [
       {
-        nombre: "Cumplimiento de Metas",
-        url: "PEGAR_LINK_POWER_BI_1"
+        nombre: "Entregas Técnicas",
+        url: "https://app.powerbi.com/view?r=eyJrIjoiZWRkMzVhMjAtYmIxNy00MjkxLTg4YmQtMDAwYTcyYWY4M2U0IiwidCI6ImRhYzY4ZWFjLTViNGQtNDEzOC1hMWEwLTk5OTQ5YjY5YmM5NCJ9"
       },
       {
-        nombre: "Rentabilidad OT",
-        url: "PEGAR_LINK_POWER_BI_2"
+        nombre: "Reporte de Cumplimiento Servicios",
+        url: "https://app.powerbi.com/view?r=eyJrIjoiYWNhODRhMjQtZDY5MS00ZDg4LTliOGUtZWNiMmYxMWUyNjc0IiwidCI6ImRhYzY4ZWFjLTViNGQtNDEzOC1hMWEwLTk5OTQ5YjY5YmM5NCJ9"
       },
       {
-        nombre: "PoP's",
-        url: "PEGAR_LINK_POWER_BI_3"
+        nombre: "Reporte de Facturación",
+        url: "https://app.powerbi.com/view?r=eyJrIjoiNjk2MjE3ZjQtN2M5Zi00ZjQwLWI3MmUtN2ZmYWEwNWE1MjkwIiwidCI6ImRhYzY4ZWFjLTViNGQtNDEzOC1hMWEwLTk5OTQ5YjY5YmM5NCJ9"
       }
     ];
 
     let indice = 0;
+    let progreso = 0;
+
     const visor = document.getElementById("visor");
-    const titulo = document.getElementById("titulo");
+    const tituloReporte = document.getElementById("tituloReporte");
+    const fechaHora = document.getElementById("fechaHora");
+    const barraProgreso = document.getElementById("barraProgreso");
 
     function cambiarReporte() {
-      titulo.textContent = reportes[indice].nombre;
+      tituloReporte.textContent = reportes[indice].nombre;
       visor.src = reportes[indice].url;
+
       indice = (indice + 1) % reportes.length;
+      progreso = 0;
+      barraProgreso.style.width = "0%";
+    }
+
+    function actualizarFechaHora() {
+      const ahora = new Date();
+      fechaHora.textContent = ahora.toLocaleString("es-PE", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function actualizarProgreso() {
+      progreso += 1000;
+      const porcentaje = (progreso / tiempoPorReporte) * 100;
+      barraProgreso.style.width = porcentaje + "%";
     }
 
     cambiarReporte();
-    setInterval(cambiarReporte, 15000);
+    actualizarFechaHora();
+
+    setInterval(cambiarReporte, tiempoPorReporte);
+    setInterval(actualizarFechaHora, 1000);
+    setInterval(actualizarProgreso, 1000);
   </script>
 
 </body>
