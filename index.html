@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>IPESA Servicios - Reportes TV</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+
+    #titulo {
+      position: fixed;
+      top: 12px;
+      left: 20px;
+      background: rgba(0,0,0,0.65);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 18px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="titulo">Cargando reporte...</div>
+  <iframe id="visor"></iframe>
+
+  <script>
+    const reportes = [
+      {
+        nombre: "Cumplimiento de Metas",
+        url: "PEGAR_LINK_POWER_BI_1"
+      },
+      {
+        nombre: "Rentabilidad OT",
+        url: "PEGAR_LINK_POWER_BI_2"
+      },
+      {
+        nombre: "PoP's",
+        url: "PEGAR_LINK_POWER_BI_3"
+      }
+    ];
+
+    let indice = 0;
+    const visor = document.getElementById("visor");
+    const titulo = document.getElementById("titulo");
+
+    function cambiarReporte() {
+      titulo.textContent = reportes[indice].nombre;
+      visor.src = reportes[indice].url;
+      indice = (indice + 1) % reportes.length;
+    }
+
+    cambiarReporte();
+    setInterval(cambiarReporte, 15000);
+  </script>
+
+</body>
+</html>
